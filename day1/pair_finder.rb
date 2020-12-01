@@ -5,14 +5,12 @@ require 'benchmark'
 
 module PairFinder
   class << self
-    def find_pair(target_value, numbers)
-      winner = numbers.select { |n| n < target_value }.combination(2).to_a.select { |a, b| a + b == target_value }[0]
-      winner[0] * winner[1]
-    end
-
-    def find_trips(target_value, numbers)
-      winner = numbers.select { |n| n < target_value }.combination(3).to_a.select { |a, b, c| a + b + c == target_value }[0]
-      winner[0] * winner[1] * winner[2]
+    def find_product(target_value, tuple_size, numbers)
+      numbers.select { |n| n < target_value }
+             .combination(tuple_size)
+             .to_a
+             .select { |t| t.inject(0, :+) == target_value }[0]
+             .inject(1) { |product, n| product * n }
     end
   end
 end
