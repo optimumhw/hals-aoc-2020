@@ -9,7 +9,7 @@ module PairFinder
       numbers.select { |n| n < target_value }
              .combination(tuple_size)
              .to_a
-             .select { |t| t.inject(0, :+) == target_value }[0]
+             .select { |n| n.inject(0, :+) == target_value }[0]
              .inject(1) { |product, n| product * n }
     end
   end
