@@ -204,6 +204,9 @@ describe 'PairFinder#findpair' do
                1806,
                1851]
 
+
+  #part1 tests
+
   context 'when given a small array and 3' do
     it 'finds the pair and returns the product' do
       expect(
@@ -219,6 +222,8 @@ describe 'PairFinder#findpair' do
       ).to eq(381_699)
     end
   end
+
+  #part2 tests
 
   context 'when given a small array and 6' do
     it 'finds the trips and returns the product' do

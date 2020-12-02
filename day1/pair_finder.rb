@@ -10,7 +10,7 @@ module PairFinder
              .combination(tuple_size)
              .to_a
              .select { |n| n.inject(0, :+) == target_value }[0]
-             .inject(1) { |product, n| product * n }
+             .reduce(1) { |product, n| product * n }
     end
   end
 end
