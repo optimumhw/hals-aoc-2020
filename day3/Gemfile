@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+ruby IO.read('.ruby-version')
+
+gem 'optimum-energy-rubocop'
+gem 'pry'
+gem 'rspec'
