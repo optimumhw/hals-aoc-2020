@@ -31,6 +31,8 @@ module PassportValidator
       true
     end
 
+
+
     def count_super_valid_passports(file_path)
       file_data = File.read(file_path)
 
