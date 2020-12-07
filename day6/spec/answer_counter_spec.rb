@@ -34,5 +34,4 @@ describe 'AnswerCounter#count_valid_passports' do
       ).to eq(3290)
     end
   end
-
 end

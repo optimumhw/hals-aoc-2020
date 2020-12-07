@@ -62,7 +62,7 @@ module SeatFinder
           seat_id >= num_columns * (num_rows - 1) ||
           boarding_passes.include?(bp)
       end
-      .map { |seat_id, _bp| seat_id }
+                                                  .map { |seat_id, _bp| seat_id }
 
       # of the seats w/o boarding passes, exclude the one(s) where
       # the neighboring seats are also missing

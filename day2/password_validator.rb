@@ -18,7 +18,6 @@ module PasswordValidator
       letter_count >= min && letter_count <= max
     end
 
-
     def count_part2_valid_passwords(file_data)
       file_data.each_slice(3)
                .to_a
@@ -30,8 +29,7 @@ module PasswordValidator
       index_right = range.split('-')[1].to_i - 1
 
       (password[index_left] == letter && password[index_right] != letter) ||
-      (password[index_left] != letter && password[index_right] == letter)
-
+        (password[index_left] != letter && password[index_right] == letter)
     end
   end
 end

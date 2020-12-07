@@ -31,20 +31,18 @@ module PassportValidator
       true
     end
 
-
-
     def count_super_valid_passports(file_path)
       file_data = File.read(file_path)
 
       file_data
         .split(/\n{2,}/)
         .map { |blob| blob.split(/\n/) }
-        .map { |passport| passport.join(' ')}
+        .map { |passport| passport.join(' ') }
         .select { |passport| super_validate?(passport) }.size
     end
 
     def transform_blob_to_template(passport_blob)
-      passport_pieces = passport_blob.split.map { |kv| kv.split(':')}
+      passport_pieces = passport_blob.split.map { |kv| kv.split(':') }
 
       template = OpenStruct.new(
         byr: nil,
@@ -84,41 +82,26 @@ module PassportValidator
     end
 
     def super_validate?(passport_blob)
-
       passport = transform_blob_to_template(passport_blob)
 
       valid = true
 
       # byr (Birth Year) - four digits; at least 1920 and at most 2002.
-      if !validate_year?(passport.byr, 1920, 2002)
-        valid = false
-      end
+      valid = false unless validate_year?(passport.byr, 1920, 2002)
 
       # iyr (Issue Year) - four digits; at least 2010 and at most 2020.
-      if !validate_year?(passport.iyr, 2010, 2020)
-        valid = false
-      end
+      valid = false unless validate_year?(passport.iyr, 2010, 2020)
 
       # eyr (Expiration Year) - four digits; at least 2020 and at most 2030
-      if !validate_year?(passport.eyr, 2020, 2030)
-        valid = false
-      end
+      valid = false unless validate_year?(passport.eyr, 2020, 2030)
 
-      if !validate_hgt?(passport.hgt)
-        valid = false
-      end
+      valid = false unless validate_hgt?(passport.hgt)
 
-      if !validate_hcl?(passport.hcl)
-        valid = false
-      end
+      valid = false unless validate_hcl?(passport.hcl)
 
-      if !validate_ecl?(passport.ecl)
-        valid = false
-      end
+      valid = false unless validate_ecl?(passport.ecl)
 
-      if !validate_pid?(passport.pid)
-        valid = false
-      end
+      valid = false unless validate_pid?(passport.pid)
 
       # cid (Country ID) - ignored, missing or not.
       # return false if passport.cid.nil?

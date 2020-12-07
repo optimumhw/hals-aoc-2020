@@ -204,8 +204,7 @@ describe 'PairFinder#findpair' do
                1806,
                1851]
 
-
-  #part1 tests
+  # part1 tests
 
   context 'when given a small array and 3' do
     it 'finds the pair and returns the product' do
@@ -223,7 +222,7 @@ describe 'PairFinder#findpair' do
     end
   end
 
-  #part2 tests
+  # part2 tests
 
   context 'when given a small array and 6' do
     it 'finds the trips and returns the product' do
