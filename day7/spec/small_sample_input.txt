@@ -1,0 +1,7 @@
+light red bags contain 1 bright white bag.
+bright white bags contain 1 shiny gold bag.
+dark gray bags contain 1 dark black bag.
+dark black bags contain 1 dark gray bag.
+muted yellow bags contain 1 shiny gold bags, 1 light zebra bags.
+shiny gold bags contain no other bags.
+light zebra bags contain no other bags.

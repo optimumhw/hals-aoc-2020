@@ -1,0 +1,5 @@
+shiny gold bags contain 2 dark red bags.
+dark red bags contain 2 dark tea bags.
+dark tea bags contain 2 dark gray bags.
+dark gray bags contain 2 dark violet bags.
+dark violet bags contain no other bags.
