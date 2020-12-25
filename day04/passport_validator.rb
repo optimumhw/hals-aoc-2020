@@ -4,6 +4,9 @@ require 'json'
 
 module PassportValidator
   class << self
+
+    OPS = %w( byr iyr eyr hgt hcl ecl pid cid )
+
     def count_valid_passports(file_path)
       file_data = File.read(file_path)
 
@@ -18,17 +21,8 @@ module PassportValidator
     def validate?(passport_blob)
       passport = transform_blob_to_template(passport_blob)
 
-      return false if passport.byr.nil?
-      return false if passport.iyr.nil?
-      return false if passport.eyr.nil?
-      return false if passport.hgt.nil?
-      return false if passport.hcl.nil?
-      return false if passport.ecl.nil?
-      return false if passport.pid.nil?
+     !OPS.any?{ passport.public_send( _1).nil? }
 
-      # return false if passport.cid.nil?
-
-      true
     end
 
     def count_super_valid_passports(file_path)
@@ -44,16 +38,9 @@ module PassportValidator
     def transform_blob_to_template(passport_blob)
       passport_pieces = passport_blob.split.map { |kv| kv.split(':') }
 
-      template = OpenStruct.new(
-        byr: nil,
-        iyr: nil,
-        eyr: nil,
-        hgt: nil,
-        hcl: nil,
-        ecl: nil,
-        pid: nil,
-        cid: nil
-      )
+
+
+      template = OpenStruct.new( **OPS.map{ [_1.to_sym, nil] }.to_h )
 
       passport_pieces.each do |piece|
         case piece[0]
