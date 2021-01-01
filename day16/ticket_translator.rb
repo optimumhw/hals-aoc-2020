@@ -39,7 +39,7 @@ module TicketTranslator
           step = PROCESSING_TICKETS
           skip = 1
         else
-          tickets << process_ticket(note)
+          tickets << process_ticket(note) unless !note.length.positive?
         end
       end
 
@@ -100,62 +100,51 @@ module TicketTranslator
           field_names <<  all_field_names.select{|fn| fn.match?(p) }
         end
 
-        arr = field_names.flatten.map{ |fn| position_and_fields.select{|k,v| v.include?(fn)}.keys }
-        ss = arr.flatten
-        values = ss.map{ |n| my_ticket[n]}
-        tt = values.reduce(1){|prod, v| prod * v }
+        ticket_positions = field_names.flatten.map{ |fn| position_and_fields
+          .select{|k,v| v.include?(fn)} }.flatten(1).to_h.keys
 
-        binding.pry
+        pos_values = my_ticket.map.with_index{|ticket_value,index| [index, ticket_value]}
+        values = ticket_positions.map{|n| pos_values.to_h[n]}
+        values.reduce(1){|prod, v| prod * v }
 
-        tt
     end
 
     def map_fields_to_positions( fields, my_ticket, tickets )
 
+      tickets_and_mine = tickets << my_ticket
       all_choices = fields.map{ |f| f[0]}
-      choices_left = fields.map{ |f| f[0]}
+
       position_and_name = {}
 
       (0..my_ticket.length-1).each do |position|
-
-        pp "THE POSTION IS #{position}"
-
-        nums_in_position = (tickets << my_ticket).map{|t| t[position]}
-
-        pp "numbers in this position: #{nums_in_position }"
-
-        pos_choices = choices_left
+        nums_in_position = tickets_and_mine.map{|t| t[position]}
+        pos_choices = all_choices
         nums_in_position.each do |tick_num|
-          fields_for_ticknum = fields.select{ |f| num_in_field_range?( tick_num, f[1] ) }.map{|f| f[0]}
+          fields_for_ticknum = fields.select{ |f| num_in_field_range?( tick_num, f[1] ) }
+          .map{|f| f[0]}
           pos_choices =  pos_choices & fields_for_ticknum
-          # pp "fields: #{fields_for_ticknum}"
-          pp "pfields: #{pos_choices}"
         end
 
         position_and_name[position] = pos_choices
-        choices_left = choices_left - pos_choices
 
-        binding.pry
-
-        # { name => position}
       end
 
-      position_and_name
+      sorted = position_and_name.sort_by{ |k,v| v.length}
+      compute_differences( sorted )
 
     end
 
-    def possible_fields(fields, position)
-      z = fields.select{ |f| position_in_field_range?( position, f[1])  }
-      z.select{ |tick_num|  }
-      binding.pry
-      z
-    end
+    def compute_differences( z )
 
+      (0..(z.length-2)).each do |a_index|
+        if z[a_index][1].length == 0
+          next
+        end
+        ((a_index+1)..(z.length-1)).each do |b_index|
+          z[b_index][1] -= z[a_index][1]
+        end
+      end
 
-
-    def possible_fields(fields, position)
-      z = fields.select{ |f| position_in_field_range?( position, f[1])  }
-      binding.pry
       z
     end
   end
