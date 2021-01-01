@@ -34,12 +34,12 @@ module TicketTranslator
           step = PROCESSING_MY_TICKET
           skip = 1
         elsif step == PROCESSING_MY_TICKET && note.length > 0
-          my_ticket = note.split(",").map{|s| s.to_i }
+          my_ticket = note.split(',').map { |s| s.to_i }
         elsif step == PROCESSING_MY_TICKET && note.length == 0
           step = PROCESSING_TICKETS
           skip = 1
         else
-          tickets << process_ticket(note) unless !note.length.positive?
+          tickets << process_ticket(note) if note.length.positive?
         end
       end
 
@@ -68,84 +68,78 @@ module TicketTranslator
     end
 
     def ticket_num_error_sum(tick_num, fields)
-      range_check = fields.reduce(0) { |sum, field| sum +
-      (num_in_field_range?( tick_num, field[1] ) ? 1 : 0) }
+      range_check = fields.reduce(0) do |sum, field|
+        sum +
+          (num_in_field_range?(tick_num, field[1]) ? 1 : 0)
+      end
       (range_check.positive? ? 0 : tick_num)
     end
 
-    def num_in_field_range?( tick_num, field_range )
-      num_in_range?( tick_num, field_range[0] ) ||
-      num_in_range?( tick_num, field_range[1] )
+    def num_in_field_range?(tick_num, field_range)
+      num_in_range?(tick_num, field_range[0]) ||
+        num_in_range?(tick_num, field_range[1])
     end
 
-    def num_in_range?( tick_num, range )
+    def num_in_range?(tick_num, range)
       tick_num >= range[0] && tick_num <= range[1]
     end
 
     #  ================ part 2 ============================
 
     def field_product(file_path, phrases)
-        notes = IO.readlines(file_path, chomp: true).map(&:to_s)
-        frt = process_notes(notes)
+      notes = IO.readlines(file_path, chomp: true).map(&:to_s)
+      notes_fields = process_notes(notes)
 
-        fields = frt[0]
-        my_ticket = frt[1]
-        tickets = frt[2].select{ |ticket| ticket_error_sum( ticket, fields) == 0 }
+      services = notes_fields[0]
+      my_ticket = notes_fields[1]
+      tickets = notes_fields[2].select { |ticket| ticket_error_sum(ticket, services).zero? }
 
-        position_and_fields = map_fields_to_positions( fields, my_ticket, tickets )
+      position_and_fields = map_fields_to_positions(services, my_ticket, tickets)
 
-        all_field_names = fields.map{ |f| f[0]}
-        field_names = []
-        phrases.each do |p|
-          field_names <<  all_field_names.select{|fn| fn.match?(p) }
-        end
+      field_names = phrases.map { |p| services.map { |f| f[0]}.select { |fn| fn.match?(p) } }
 
-        ticket_positions = field_names.flatten.map{ |fn| position_and_fields
-          .select{|k,v| v.include?(fn)} }.flatten(1).to_h.keys
+      ticket_positions = field_names.flatten.map do |fn|
+        position_and_fields
+          .select { |_k, v| v.include?(fn)}
+      end .flatten(1).to_h.keys
 
-        pos_values = my_ticket.map.with_index{|ticket_value,index| [index, ticket_value]}
-        values = ticket_positions.map{|n| pos_values.to_h[n]}
-        values.reduce(1){|prod, v| prod * v }
+      my_ticket_values_and_index =
+        my_ticket.map.with_index { |ticket_value, index| [index, ticket_value]}
+                 .to_h
 
+      ticket_positions.map { |n| my_ticket_values_and_index[n]}
+                      .reduce(1) { |prod, v| prod * v }
     end
 
-    def map_fields_to_positions( fields, my_ticket, tickets )
-
+    def map_fields_to_positions(fields, my_ticket, tickets)
       tickets_and_mine = tickets << my_ticket
-      all_choices = fields.map{ |f| f[0]}
+      all_choices = fields.map { |f| f[0]}
 
       position_and_name = {}
 
-      (0..my_ticket.length-1).each do |position|
-        nums_in_position = tickets_and_mine.map{|t| t[position]}
+      (0..my_ticket.length - 1).each do |position|
+        nums_in_position = tickets_and_mine.map { |t| t[position]}
         pos_choices = all_choices
         nums_in_position.each do |tick_num|
-          fields_for_ticknum = fields.select{ |f| num_in_field_range?( tick_num, f[1] ) }
-          .map{|f| f[0]}
-          pos_choices =  pos_choices & fields_for_ticknum
+          fields_for_ticknum = fields.select { |f| num_in_field_range?(tick_num, f[1]) }
+                                     .map { |f| f[0]}
+          pos_choices &= fields_for_ticknum
         end
-
         position_and_name[position] = pos_choices
-
       end
-
-      sorted = position_and_name.sort_by{ |k,v| v.length}
-      compute_differences( sorted )
-
+      compute_differences(position_and_name.sort_by { |_k, v| v.length})
     end
 
-    def compute_differences( z )
+    def compute_differences(position_and_name)
+      (0..(position_and_name.length - 2)).each do |a_index|
+        next if position_and_name[a_index][1].length.zero?
 
-      (0..(z.length-2)).each do |a_index|
-        if z[a_index][1].length == 0
-          next
-        end
-        ((a_index+1)..(z.length-1)).each do |b_index|
-          z[b_index][1] -= z[a_index][1]
+        ((a_index + 1)..(position_and_name.length - 1)).each do |b_index|
+          position_and_name[b_index][1] -= position_and_name[a_index][1]
         end
       end
 
-      z
+      position_and_name
     end
   end
 end

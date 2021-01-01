@@ -3,7 +3,6 @@
 require_relative '../ticket_translator'
 
 describe 'TicketTranslator#scan_error_rate' do
-
   context 'when given the sample' do
     it 'computes the scan error rate' do
       expect(
@@ -24,7 +23,7 @@ describe 'TicketTranslator#scan_error_rate' do
   context 'when given part1 puzzle input' do
     it 'computes the product of the fields' do
       expect(
-        TicketTranslator.field_product('spec/part2_sample.txt', %w(row class seat))
+        TicketTranslator.field_product('spec/part2_sample.txt', %w[row class seat])
       ).to eq(11 * 12 * 13)
     end
   end
@@ -32,7 +31,7 @@ describe 'TicketTranslator#scan_error_rate' do
   context 'when given part1 puzzle input' do
     it 'computes the product of the fields' do
       expect(
-        TicketTranslator.field_product('spec/part2_other_sample.txt', %w(row class seat))
+        TicketTranslator.field_product('spec/part2_other_sample.txt', %w[row class seat])
       ).to eq(11 * 12 * 13)
     end
   end
@@ -40,9 +39,8 @@ describe 'TicketTranslator#scan_error_rate' do
   context 'when given part2 puzzle input' do
     it 'computes the scan error rate' do
       expect(
-        TicketTranslator.field_product('spec/part1_puzzle_input.txt', %w(departure))
-      ).to eq(1346570764607)
+        TicketTranslator.field_product('spec/part1_puzzle_input.txt', %w[departure])
+      ).to eq(1_346_570_764_607)
     end
   end
-
 end
