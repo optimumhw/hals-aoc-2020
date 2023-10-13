@@ -1,4 +1,6 @@
 
+to run tests, just run rspec
+
 this puzzle is from https://adventofcode.com/2020/day/13
 
 --- Day 13: Shuttle Search ---
