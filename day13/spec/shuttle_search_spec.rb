@@ -150,6 +150,19 @@ describe 'ShuttleSearch#distance' do
     end
   end
 
+  context 'when asked for the first time from valid array' do
+    it 'computes the number' do
+      expect( ShuttleSearch.compute_first_time!( [[3,2],[7,3],[10,9]] ) ).to eq(59)
+    end
+  end
+
+  # 1789,37,47,1889 first occurs at timestamp 1202161486.
+  context 'when asked for the first time from an example' do
+    it 'computes the number' do
+      expect( ShuttleSearch.compute_first_time!( [[1789,0],[37,37-1],[47,47-2],[1889,1889-3]] ) ).to eq(1202161486)
+    end
+  end
+
   context 'when asked for the first time' do
     it 'computes fist time' do
       expect(
